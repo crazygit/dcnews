@@ -118,21 +118,28 @@ def escape_text(text: str) -> str:
 
 
 def send_news_message(context: CallbackContext) -> None:
-    news_list = get_news()
-    # 按照时间先后排序
-    news_list.reverse()
-    chat_id = context.job.context.get("channel_id")
-    interval = context.job.context.get("interval")
-    for news in news_list:
-        if news.publish_time + interval * 1000 >= int(time.time() * 1000):
-            context.bot.send_message(
-                chat_id=chat_id,
-                parse_mode="MarkdownV2",
-                text=news.to_markdown(),
-                disable_web_page_preview=True,
-            )
-    else:
-        logger.info(f"No news in latest {interval} seconds")
+    try:
+        chat_id = context.job.context.get("channel_id")
+        interval = context.job.context.get("interval")
+        news_list = get_news()
+        # 按照时间先后排序
+        if news_list:
+            news_list.reverse()
+            for news in news_list:
+                if news.publish_time + interval * 1000 >= int(time.time() * 1000):
+                    logger.info(f"send message: {news.to_markdown()}")
+                    context.bot.send_message(
+                        chat_id=chat_id,
+                        parse_mode="MarkdownV2",
+                        text=news.to_markdown(),
+                        disable_web_page_preview=True,
+                    )
+                else:
+                    logger.info(f"Repeated message: {news.to_markdown()}")
+        else:
+            logger.info(f"No news in latest {interval} seconds")
+    except Exception as e:
+        logger.exception(e)
 
 
 def error_callback(update: Updater, context: CallbackContext) -> None:
