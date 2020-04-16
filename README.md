@@ -1,3 +1,7 @@
+[DEPRECATED]
+
+Move to <https://github.com/crazygit/post-telegram-action>
+
 ## 币圈资讯机器人
 
 不定期推送当前热门的币圈资讯
@@ -28,5 +32,6 @@ $ python news_bot.py
 * [币快报](https://www.beekuaibao.com/newsflashes)
 
 ## Telegram Channel
+
 
 <https://t.me/dc_news_7x24>
